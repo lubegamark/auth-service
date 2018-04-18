@@ -15,8 +15,7 @@ from auth.models import users, db_session
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-app.config["SECURITY_PASSWORD_SALT"] = os.environ.get("SECURITY_PASSWORD_SALT") 
-
+app.config["SECURITY_PASSWORD_SALT"] = os.environ.get("SECURITY_PASSWORD_SALT")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
 
 db = SQLAlchemy(app)
@@ -40,6 +39,7 @@ def status():
     payload = {"status": "running"}
     return json.dumps(payload)
 
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     request_data = request.get_json()
@@ -54,7 +54,7 @@ def register():
         validated = registration_schema(request_data)
         validated["phone_number"] = validated.pop("phoneNumber")
         validated["password"] = hash_password(validated["password"])
-        new_user = security.datastore.create_user(**validated)
+        security.datastore.create_user(**validated)
         db.session.commit()
     except MultipleInvalid as error:
         print(error)

@@ -38,13 +38,13 @@ def upgrade():
         'users',
         sa.Column('active', sa.Boolean(), nullable=True))
     op.add_column(
-        'users', 
+        'users',
         sa.Column('confirmed_at', sa.DateTime(), nullable=True))
     op.add_column(
-        'users', 
+        'users',
         sa.Column('current_login_at', sa.DateTime(), nullable=True))
     op.add_column(
-        'users', 
+        'users',
         sa.Column('current_login_ip', sa.String(length=100), nullable=True))
     op.add_column(
         'users',
@@ -53,7 +53,7 @@ def upgrade():
         'users',
         sa.Column('last_login_ip', sa.String(length=100), nullable=True))
     op.add_column(
-        'users', 
+        'users',
         sa.Column('login_count', sa.Integer(), nullable=True))
 
 
@@ -67,4 +67,3 @@ def downgrade():
     op.drop_column('users', 'active')
     op.drop_table('roles_users')
     op.drop_table('roles')
-

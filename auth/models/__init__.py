@@ -13,5 +13,3 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 
 ModelBase = declarative_base()
 ModelBase.query = db_session.query_property()
-
-

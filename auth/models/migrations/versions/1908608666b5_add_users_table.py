@@ -1,7 +1,7 @@
 """Add users table
 
 Revision ID: 1908608666b5
-Revises: 
+Revises:
 Create Date: 2018-04-15 13:07:26.762294
 
 """
@@ -31,4 +31,3 @@ def upgrade():
 
 def downgrade():
     op.drop_table('users')
-

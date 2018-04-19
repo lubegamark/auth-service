@@ -54,7 +54,9 @@ def register():
         validated = registration_schema(request_data)
         validated["phone_number"] = validated.pop("phoneNumber")
         validated["password"] = hash_password(validated["password"])
-        security.datastore.create_user(**validated)
+
+        new_user = security.datastore.create_user(**validated)
+        print(type(new_user))
         db.session.commit()
     except MultipleInvalid as error:
         print(error)
@@ -62,7 +64,7 @@ def register():
     except Exception as error:
         print(error)
         return "Unknown Error occurred", 500
-    return "ok"
+    return json.dumps(new_user.to_json())
 
 
 if __name__ == '__main__':

@@ -48,3 +48,6 @@ class User(BaseModel):
         secondary='roles_users',
         backref=sa.orm.backref('users', lazy='dynamic')
     )
+
+    FIELDS = ['name', 'username', 'email']
+

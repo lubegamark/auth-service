@@ -1,7 +1,7 @@
 """Users"""
 import sqlalchemy as sa
 
-from auth.models import BaseModel, Serializer
+from auth.models import BaseModel
 
 
 class RoleUser(BaseModel):
@@ -50,4 +50,3 @@ class User(BaseModel):
     )
 
     FIELDS = ['name', 'username', 'email']
-

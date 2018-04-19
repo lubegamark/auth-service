@@ -1,10 +1,10 @@
 """Users"""
 import sqlalchemy as sa
 
-from auth.models import ModelBase
+from auth.models import BaseModel, Serializer
 
 
-class RoleUser(ModelBase):
+class RoleUser(BaseModel):
     """Role and User intermediate Table
     """
     __tablename__ = 'roles_users'
@@ -14,7 +14,7 @@ class RoleUser(ModelBase):
     role_id = sa.Column(sa.Integer, sa.ForeignKey('roles.id'))
 
 
-class Role(ModelBase):
+class Role(BaseModel):
     """Roles to handle permissions
     """
     __tablename__ = 'roles'
@@ -24,7 +24,7 @@ class Role(ModelBase):
     description = sa.Column(sa.String(255))
 
 
-class User(ModelBase):
+class User(BaseModel):
     """Users of the system
     """
 

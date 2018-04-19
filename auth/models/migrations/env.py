@@ -20,7 +20,7 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 
 import auth.models.users
-target_metadata = models.ModelBase.metadata
+target_metadata = models.DeclarativeBase.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

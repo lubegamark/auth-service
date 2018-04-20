@@ -1,9 +1,11 @@
+import datetime
 import json
 import os
 
+import jwt
 from flask import Flask, request
 from flask_security import Security, SQLAlchemyUserDatastore
-from flask_security.utils import hash_password
+from flask_security.utils import hash_password, verify_password
 from flask_sqlalchemy import SQLAlchemy
 from voluptuous import (
     MultipleInvalid,
@@ -11,6 +13,7 @@ from voluptuous import (
     Schema)
 
 from auth.models import users, db_session
+from auth.models.users import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
@@ -40,7 +43,7 @@ def status():
     return json.dumps(payload)
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['POST'])
 def register():
     request_data = request.get_json()
     registration_schema = Schema({
@@ -65,6 +68,53 @@ def register():
         print(error)
         return "Unknown Error occurred", 500
     return json.dumps(new_user.to_json())
+
+
+@app.route('/token', methods=['POST'])
+def login():
+    request_data = request.get_json()
+    login_schema = Schema({
+        Required("username"): str,
+        Required("password"): str,
+    })
+
+    try:
+        validated = login_schema(request_data)
+        user = User.query.filter(User.username == validated["username"]).one()
+        if user and verify_password(validated["password"], user.password):
+            return encode_auth_token(user.id)
+        else:
+            return "Failed to Authenticate", 403
+
+    except MultipleInvalid as error:
+        print(error)
+        return "Validation Error", 400
+    except Exception as error:
+        print(error)
+        return "Unknown Error occurred", 500
+
+
+def encode_auth_token(user_id):
+    """
+    Generates the Auth Token
+    :return: string
+    """
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0,
+                                                                   seconds=5),
+            'iat': datetime.datetime.utcnow(),
+            'sub': user_id
+        }
+        token = jwt.encode(
+            payload,
+            app.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        )
+        return json.dumps({"token": token.decode('utf-8')})
+    except Exception as e:
+        print(e)
+        return "Unknown Error occurred", 500
 
 
 if __name__ == '__main__':

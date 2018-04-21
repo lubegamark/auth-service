@@ -3,15 +3,15 @@ import json
 import os
 
 import jwt
+from flasgger import Swagger
 from flask import Flask, request
 from flask_security import Security, SQLAlchemyUserDatastore
 from flask_security.utils import hash_password, verify_password
 from flask_sqlalchemy import SQLAlchemy
-from flasgger import Swagger
 from voluptuous import (
     MultipleInvalid,
     Required,
-    Schema)
+    Schema, Optional)
 
 from auth.models import users, db_session
 from auth.models.users import User
@@ -60,12 +60,72 @@ def status():
 
 @app.route('/register', methods=['POST'])
 def register():
+    """Create New User
+    Register User in the system
+    ---
+    parameters:
+      - name: body
+        in: body
+        type: string
+        required: true
+        schema:
+              id: User
+              required:
+                - username
+                - password
+                - name
+                - phoneNumber
+              properties:
+                name:
+                  type: string
+                  description: Name of user
+                  default: John Doe
+                username:
+                  type: string
+                  description: Username of user
+                  default: john
+                password:
+                  type: string
+                  description: User's Password
+                  default: "********"
+                phoneNumber:
+                  type: string
+                  description: User's Password
+                  default: "+256789456123"
+                email:
+                  type: string
+                  description: Users Email address
+                  default: john@doe.me
+    definitions:
+      User:
+        type: object
+        properties:
+          name:
+            type: string
+          username:
+            type: string
+          email:
+            type: string
+          phoneNumber:
+            type: string
+    responses:
+      200:
+        description: An instance of created user
+        schema:
+          id: Users
+          type: object
+          $ref: '#/definitions/User'
+        examples:
+          {"id": 1, "username": "john", "phoneNumber": "+256789456123"}
+    """
+
     request_data = request.get_json()
     registration_schema = Schema({
         Required("name"): str,
         Required("username"): str,
         Required("password"): str,
         Required("phoneNumber"): str,
+        Optional("email"): str,
     })
 
     try:

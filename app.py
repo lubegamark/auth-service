@@ -7,6 +7,7 @@ from flask import Flask, request
 from flask_security import Security, SQLAlchemyUserDatastore
 from flask_security.utils import hash_password, verify_password
 from flask_sqlalchemy import SQLAlchemy
+from flasgger import Swagger
 from voluptuous import (
     MultipleInvalid,
     Required,
@@ -24,17 +25,31 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
 db = SQLAlchemy(app)
 db.session = db_session
 
+swagger_config = {
+    "headers": [
+    ],
+    "specs": [
+        {
+            "endpoint": 'apispec_1',
+            "route": '/apispec_1.json',
+            "rule_filter": lambda rule: True,  # all in
+            "model_filter": lambda tag: True,  # all in
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    # "static_folder": "static",  # must be set by user
+    "swagger_ui": True,
+    "specs_route": "/"
+}
+
+swagger = Swagger(app, config=swagger_config)
+
 
 user_datastore = SQLAlchemyUserDatastore(
     db,
     users.User,
     users.Role)
 security = Security(app, user_datastore)
-
-
-@app.route('/')
-def index():
-    return 'Ok'
 
 
 @app.route('/status')

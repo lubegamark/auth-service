@@ -94,6 +94,13 @@ def login():
         return "Unknown Error occurred", 500
 
 
+@app.route('/validate', methods=['POST'])
+def validate_token():
+    bearer = request.headers["Authorization"]
+    token = bearer.split(" ")[1]
+    return decode_auth_token(token)
+
+
 def encode_auth_token(user_id):
     """
     Generates the Auth Token
@@ -101,8 +108,9 @@ def encode_auth_token(user_id):
     """
     try:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0,
-                                                                   seconds=5),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(
+                days=0,
+                seconds=300),
             'iat': datetime.datetime.utcnow(),
             'sub': user_id
         }
@@ -115,6 +123,22 @@ def encode_auth_token(user_id):
     except Exception as e:
         print(e)
         return "Unknown Error occurred", 500
+
+
+def decode_auth_token(auth_token):
+    """
+    Decodes the auth token
+    :param auth_token:
+    :return: integer|string
+    """
+    try:
+        payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+        print(payload)
+        return payload['sub']
+    except jwt.ExpiredSignatureError:
+        return 'Signature expired. Please log in again.', 401
+    except jwt.InvalidTokenError:
+        return 'Invalid token. Please log in again.', 401
 
 
 if __name__ == '__main__':

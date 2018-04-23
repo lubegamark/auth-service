@@ -15,13 +15,19 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 about = {}
 if not VERSION:
-    with open(os.path.join(here, NAME, '__version__.py')) as f:
+    with open(os.path.join(here, "auth", '__version__.py')) as f:
         exec(f.read(), about)
 else:
     about['__version__'] = VERSION
 
 setup(
-    name='gmoney-auth-service',
+    name=NAME,
+    version=about['__version__'],
+    description=DESCRIPTION,
+    author=AUTHOR,
+    author_email=EMAIL,
+    python_requires=REQUIRES_PYTHON,
+    url=URL,
     packages=['auth'],
     include_package_data=True,
     install_requires=[

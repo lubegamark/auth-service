@@ -159,7 +159,7 @@ def login():
         validated = login_schema(request_data)
         user = User.query.filter(User.username == validated["username"]).one()
         if user and verify_password(validated["password"], user.password):
-            return encode_auth_token(user.id)
+            return encode_auth_token(user)
         else:
             return "Failed to Authenticate", 403
 
@@ -178,7 +178,7 @@ def validate_token():
     return decode_auth_token(token)
 
 
-def encode_auth_token(user_id):
+def encode_auth_token(user):
     """
     Generates the Auth Token
     :return: string
@@ -189,7 +189,7 @@ def encode_auth_token(user_id):
                 days=0,
                 seconds=300),
             'iat': datetime.datetime.utcnow(),
-            'sub': user_id
+            'sub': user.uuid
         }
         token = jwt.encode(
             payload,

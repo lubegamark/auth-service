@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import uuid
 
 import jwt
 from flasgger import Swagger
@@ -132,6 +133,7 @@ def register():
         validated = registration_schema(request_data)
         validated["phone_number"] = validated.pop("phoneNumber")
         validated["password"] = hash_password(validated["password"])
+        validated["uuid"] = uuid.uuid4()
 
         new_user = security.datastore.create_user(**validated)
         print(type(new_user))

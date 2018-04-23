@@ -30,10 +30,7 @@ spec:
     spec: 
       containers:
       - name: auth-1
-        image: python:alpine3.6
-        # Just spin & wait forever
-        command: [ "/bin/sh", "-c", "--" ]
-        args: [ "while true; do sleep 3000; done;" ]
+        image: gmoney-auth-image:v0
 ---
 # Postgresql Volume
 apiVersion: v1

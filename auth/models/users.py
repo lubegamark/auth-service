@@ -36,7 +36,7 @@ class User(BaseModel):
     password = sa.Column(sa.String, nullable=False)
     email = sa.Column(sa.String, nullable=True)
     phone_number = sa.Column(sa.String, nullable=False)
-    uuid = sa.Column(sa.String, nullable=False)
+    uuid = sa.Column(sa.String, unique=True, nullable=False)
     last_login_at = sa.Column(sa.DateTime())
     current_login_at = sa.Column(sa.DateTime())
     last_login_ip = sa.Column(sa.String(100))

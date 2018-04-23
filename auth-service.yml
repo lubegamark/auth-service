@@ -69,21 +69,39 @@ spec:
         args: [ "while true; do sleep 3000; done;" ]
         env:
         - name: PG_MASTER_USER
-          value: master
+          valueFrom:
+            secretKeyRef:
+              name: db-variables
+              key: master_username
         - name: PGHOST
           value: /tmp
         - name: PG_MODE
           value: master
         - name: PG_MASTER_PASSWORD
-          value: password	
+          valueFrom:
+            secretKeyRef:
+              name: db-variables
+              key: master_password
         - name: PG_USER
-          value: testUser
+          valueFrom:
+            secretKeyRef:
+              name: db-variables
+              key: user_username
         - name: PG_PASSWORD
-          value: password
+          valueFrom:
+            secretKeyRef:
+              name: db-variables
+              key: user_password
         - name: PG_ROOT_PASSWORD
-          value: password
+          valueFrom:
+            secretKeyRef:
+              name: db-variables
+              key: root_password
         - name: PG_DATABASE
-          value: auth
+          valueFrom:
+            secretKeyRef:
+              name: db-variables
+              key: database
         ports:
         - containerPort: 5432
           name: postgres

@@ -31,6 +31,22 @@ spec:
       containers:
       - name: auth-1
         image: gmoney-auth-image:v0
+        env:
+        - name: DATABASE_URI
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: db_uri
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: flask
+              key: secret_key
+        - name: SECURITY_PASSWORD_SALT
+          valueFrom:
+            secretKeyRef:
+              name: flask
+              key: password_salt
 ---
 # Postgresql Volume
 apiVersion: v1

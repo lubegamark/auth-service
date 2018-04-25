@@ -21,7 +21,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SECURITY_PASSWORD_SALT"] = os.environ.get("SECURITY_PASSWORD_SALT")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
 
 db = SQLAlchemy(app)
 db.session = db_session

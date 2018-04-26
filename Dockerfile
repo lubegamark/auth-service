@@ -4,5 +4,3 @@ RUN mkdir /src
 WORKDIR /src
 ADD . /src/
 RUN pip install -e .
-RUN alembic upgrade head
-CMD python app.py

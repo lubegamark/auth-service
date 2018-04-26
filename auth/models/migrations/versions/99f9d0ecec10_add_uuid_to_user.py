@@ -35,7 +35,8 @@ def upgrade():
             .where(user_table.c.id == id)
         )
 
-    op.alter_column('users', 'uuid', nullable=False, unique=True)
+    op.alter_column('users', 'uuid', nullable=False)
+    op.create_unique_constraint(None, 'users', ['uuid'])
 
 
 def downgrade():

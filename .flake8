@@ -1,2 +1,2 @@
 [flake8]
-exclude = auth/models/migrations/env.py
+exclude = venv,auth/models/migrations/env.py

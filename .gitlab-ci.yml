@@ -1,7 +1,7 @@
 # This file is a template, and might need editing before it works on your project.
 # Official language image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/python/tags/
-image: python:latest
+image: python:3.6
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
@@ -16,19 +16,25 @@ variables:
 cache:
   paths:
     - .cache/pip
-    - venv/
 
 before_script:
   - python -V               # Print out python version for debugging
-  - pip install virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
 
-test:
+install-deps:
   script:
-  - python setup.py test
-  - pip install tox flake8  # you can also use tox
-  - tox -e py36,flake8
+  - pip install -e .
+
+#test:
+#  script:
+#  - python setup.py test
+#  - pip install tox flake8  # you can also use tox
+#  - tox -e py36,flake8
+
+code-analysis:
+  script:
+  - pip install flake8
+  - ls
+  - flake8 .
 
 run:
   script:
@@ -40,13 +46,13 @@ run:
     paths:
     - dist/*.whl
 
-pages:
-  script:
-  - pip install sphinx sphinx-rtd-theme
-  - cd doc ; make html
-  - mv build/html/ ../public/
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
+#pages:
+#  script:
+#  - pip install sphinx sphinx-rtd-theme
+#  - cd doc ; make html
+#  - mv build/html/ ../public/
+#  artifacts:
+#    paths:
+#    - public
+#  only:
+#  - master

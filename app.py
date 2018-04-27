@@ -6,6 +6,7 @@ import uuid
 import jwt
 from flasgger import Swagger
 from flask import Flask, request
+from flask.json import jsonify
 from flask_security import Security, SQLAlchemyUserDatastore
 from flask_security.utils import hash_password, verify_password
 from flask_sqlalchemy import SQLAlchemy
@@ -139,10 +140,10 @@ def register():
         db.session.commit()
     except MultipleInvalid as error:
         print(error)
-        return "Validation Error", 400
+        raise APIError("Validation Error", 400)
     except Exception as error:
         print(error)
-        return "Unknown Error occurred", 500
+        raise APIError("Unknown Error occurred", 500)
     return json.dumps(new_user.to_json())
 
 
@@ -192,11 +193,11 @@ def login():
         if user and verify_password(validated["password"], user.password):
             return encode_auth_token(user)
         else:
-            return "Failed to Authenticate", 403
+            raise APIError("Failed to Authenticate", 403)
 
     except MultipleInvalid as error:
         print(error)
-        return "Validation Error", 400
+        raise APIError("Validation Error", 400)
     except Exception as error:
         print(error)
         raise APIError("Unknown Error occurred", 500)
@@ -206,7 +207,7 @@ def login():
 def validate_token():
     bearer = request.headers["Authorization"]
     token = bearer.split(" ")[1]
-    return decode_auth_token(token)
+    return "", 200
 
 
 def encode_auth_token(user):
@@ -230,7 +231,7 @@ def encode_auth_token(user):
         return json.dumps({"token": token.decode('utf-8')})
     except Exception as e:
         print(e)
-        return "Unknown Error occurred", 500
+        raise APIError("Unknown Error occurred", 500)
 
 
 def decode_auth_token(auth_token):
@@ -244,9 +245,32 @@ def decode_auth_token(auth_token):
         print(payload)
         return payload['sub']
     except jwt.ExpiredSignatureError:
-        return 'Signature expired. Please log in again.', 401
+        raise APIError('Signature expired. Please log in again.', 401)
     except jwt.InvalidTokenError:
-        return 'Invalid token. Please log in again.', 401
+        raise APIError('Invalid token. Please log in again.', 401)
+
+
+class APIError(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+
+@app.errorhandler(APIError)
+def handle_api_error(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
 
 
 if __name__ == '__main__':

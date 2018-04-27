@@ -294,5 +294,40 @@ def handle_api_error(error):
     return response
 
 
+@app.errorhandler(400)
+def page_not_found(e):
+    response = jsonify({"message": "Bad Request"})
+    response.status_code = 400
+    return response
+
+
+@app.errorhandler(401)
+def page_not_found(e):
+    response = jsonify({"message": "Unauthorized"})
+    response.status_code = 401
+    return response
+
+
+@app.errorhandler(403)
+def page_not_found(e):
+    response = jsonify({"message": "Forbidden"})
+    response.status_code = 403
+    return response
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    response = jsonify({"message": "Not Found"})
+    response.status_code = 404
+    return response
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    response = jsonify({"message": "Unknown Error"})
+    response.status_code = 500
+    return response
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

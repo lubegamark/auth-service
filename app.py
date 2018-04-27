@@ -148,6 +148,38 @@ def register():
 
 @app.route('/token', methods=['POST'])
 def login():
+    """Login
+    Get JWT Token
+    ---
+    parameters:
+      - name: body
+        in: body
+        type: string
+        required: true
+        schema:
+              id: User
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Username of user
+                  default: john
+                password:
+                  type: string
+                  description: User's Password
+                  default: "********"
+    responses:
+      200:
+        description: An instance of created user
+        schema:
+          id: Users
+          type: object
+        examples:
+          {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQ4MTM2NTksImlhdCI6MTUyNDgxMzM1OSwic3ViIjoiZGU2NTM0YWQtNWM0OC00NGEyLWJhYzktM2Q3OTkwMmVjODE2In0.4SQsr4I_R9mxdl-EgcggnPU8Ls_SR2zjdug-_mfhtKc"}
+
+    """
     request_data = request.get_json()
     login_schema = Schema({
         Required("username"): str,
@@ -167,7 +199,7 @@ def login():
         return "Validation Error", 400
     except Exception as error:
         print(error)
-        return "Unknown Error occurred", 500
+        raise APIError("Unknown Error occurred", 500)
 
 
 @app.route('/validate', methods=['POST'])

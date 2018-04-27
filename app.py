@@ -231,6 +231,47 @@ def validate_token():
     return jsonify({"user": j})
 
 
+@app.route('/users', methods=['GET'])
+def get_users():
+    """Get Users
+    Get All Users
+    ---
+    responses:
+      200:
+        description: List of all users in the system
+        schema:
+          id: Users
+          type: object
+        examples:
+            [
+              {
+                "email": null,
+                "name": "John Doe",
+                "username": "john",
+                "uuid": "de6534ad-5c48-44a2-bac9-3d79902ec816"
+              },
+              {
+                "email": "lurark@gmail.com",
+                "name": "Lu Rark",
+                "username": "lu",
+                "uuid": "d99b8842-4b2a-4af6-920a-8f190db006c8"
+              },
+              {
+                "email": "aiba@gmail.com",
+                "name": "Sela Aiba",
+                "username": "aiba",
+                "uuid": "7a5a317f-0aff-4710-b312-850a65f2e3f6"
+              },
+            ]
+
+
+    """
+    users = User.query.all()
+    users_json = [u.to_json() for u in users]
+    print(users_json)
+    return jsonify(users_json)
+
+
 def encode_auth_token(user):
     """
     Generates the Auth Token

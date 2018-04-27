@@ -205,6 +205,25 @@ def login():
 
 @app.route('/validate', methods=['POST'])
 def validate_token():
+    """Validate
+    Check if JWT Token is valid
+    ---
+    parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+          required: true
+    responses:
+      200:
+        description: user id
+        schema:
+          id: Users
+          type: object
+        examples:
+          {"user": "de6534ad-5c48-44a2-bac9-3d79902ec816"}
+
+    """
     bearer = request.headers["Authorization"]
     token = bearer.split(" ")[1]
     j = decode_auth_token(token)

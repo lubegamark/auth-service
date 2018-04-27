@@ -34,7 +34,7 @@ code-analysis:
   script:
   - pip install flake8
   - ls
-  - flake8 . --excluede venv
+  - flake8 .
 
 run:
   script:

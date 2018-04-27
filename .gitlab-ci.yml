@@ -32,6 +32,7 @@ install-deps:
 
 code-analysis:
   script:
+  - pip install flake8
   - ls
   - flake8 .
 

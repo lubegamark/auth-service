@@ -207,7 +207,9 @@ def login():
 def validate_token():
     bearer = request.headers["Authorization"]
     token = bearer.split(" ")[1]
-    return "", 200
+    j = decode_auth_token(token)
+    print(j)
+    return jsonify({"user": j})
 
 
 def encode_auth_token(user):

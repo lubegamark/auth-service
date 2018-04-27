@@ -178,8 +178,7 @@ def login():
           id: Users
           type: object
         examples:
-          {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQ4MTM2NTksImlhdCI6MTUyNDgxMzM1OSwic3ViIjoiZGU2NTM0YWQtNWM0OC00NGEyLWJhYzktM2Q3OTkwMmVjODE2In0.4SQsr4I_R9mxdl-EgcggnPU8Ls_SR2zjdug-_mfhtKc"}
-
+          {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQ4MTM"}
     """
     request_data = request.get_json()
     login_schema = Schema({

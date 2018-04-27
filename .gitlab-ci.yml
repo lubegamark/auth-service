@@ -36,7 +36,7 @@ install-deps:
 
 code-analysis:
   script:
-  - flake8
+  - flake8 .
 
 run:
   script:

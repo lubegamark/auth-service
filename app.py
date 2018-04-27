@@ -295,21 +295,21 @@ def handle_api_error(error):
 
 
 @app.errorhandler(400)
-def page_not_found(e):
+def bad_request(e):
     response = jsonify({"message": "Bad Request"})
     response.status_code = 400
     return response
 
 
 @app.errorhandler(401)
-def page_not_found(e):
+def unauthorized(e):
     response = jsonify({"message": "Unauthorized"})
     response.status_code = 401
     return response
 
 
 @app.errorhandler(403)
-def page_not_found(e):
+def forbidden(e):
     response = jsonify({"message": "Forbidden"})
     response.status_code = 403
     return response

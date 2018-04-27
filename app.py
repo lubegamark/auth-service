@@ -6,6 +6,7 @@ import uuid
 import jwt
 from flasgger import Swagger
 from flask import Flask, request
+from flask.json import jsonify
 from flask_security import Security, SQLAlchemyUserDatastore
 from flask_security.utils import hash_password, verify_password
 from flask_sqlalchemy import SQLAlchemy
@@ -139,15 +140,47 @@ def register():
         db.session.commit()
     except MultipleInvalid as error:
         print(error)
-        return "Validation Error", 400
+        raise APIError("Validation Error", 400)
     except Exception as error:
         print(error)
-        return "Unknown Error occurred", 500
+        raise APIError("Unknown Error occurred", 500)
     return json.dumps(new_user.to_json())
 
 
 @app.route('/token', methods=['POST'])
 def login():
+    """Login
+    Get JWT Token
+    ---
+    parameters:
+      - name: body
+        in: body
+        type: string
+        required: true
+        schema:
+              id: User
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Username of user
+                  default: john
+                password:
+                  type: string
+                  description: User's Password
+                  default: "********"
+    responses:
+      200:
+        description: An instance of created user
+        schema:
+          id: Users
+          type: object
+        examples:
+          {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQ4MTM2NTksImlhdCI6MTUyNDgxMzM1OSwic3ViIjoiZGU2NTM0YWQtNWM0OC00NGEyLWJhYzktM2Q3OTkwMmVjODE2In0.4SQsr4I_R9mxdl-EgcggnPU8Ls_SR2zjdug-_mfhtKc"}
+
+    """
     request_data = request.get_json()
     login_schema = Schema({
         Required("username"): str,
@@ -160,21 +193,42 @@ def login():
         if user and verify_password(validated["password"], user.password):
             return encode_auth_token(user)
         else:
-            return "Failed to Authenticate", 403
+            raise APIError("Failed to Authenticate", 403)
 
     except MultipleInvalid as error:
         print(error)
-        return "Validation Error", 400
+        raise APIError("Validation Error", 400)
     except Exception as error:
         print(error)
-        return "Unknown Error occurred", 500
+        raise APIError("Unknown Error occurred", 500)
 
 
 @app.route('/validate', methods=['POST'])
 def validate_token():
+    """Validate
+    Check if JWT Token is valid
+    ---
+    parameters:
+      - name: Authorization
+        in: header
+        schema:
+          type: string
+          required: true
+    responses:
+      200:
+        description: user id
+        schema:
+          id: Users
+          type: object
+        examples:
+          {"user": "de6534ad-5c48-44a2-bac9-3d79902ec816"}
+
+    """
     bearer = request.headers["Authorization"]
     token = bearer.split(" ")[1]
-    return decode_auth_token(token)
+    j = decode_auth_token(token)
+    print(j)
+    return jsonify({"user": j})
 
 
 def encode_auth_token(user):
@@ -198,7 +252,7 @@ def encode_auth_token(user):
         return json.dumps({"token": token.decode('utf-8')})
     except Exception as e:
         print(e)
-        return "Unknown Error occurred", 500
+        raise APIError("Unknown Error occurred", 500)
 
 
 def decode_auth_token(auth_token):
@@ -212,9 +266,67 @@ def decode_auth_token(auth_token):
         print(payload)
         return payload['sub']
     except jwt.ExpiredSignatureError:
-        return 'Signature expired. Please log in again.', 401
+        raise APIError('Signature expired. Please log in again.', 401)
     except jwt.InvalidTokenError:
-        return 'Invalid token. Please log in again.', 401
+        raise APIError('Invalid token. Please log in again.', 401)
+
+
+class APIError(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+
+@app.errorhandler(APIError)
+def handle_api_error(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+@app.errorhandler(400)
+def bad_request(e):
+    response = jsonify({"message": "Bad Request"})
+    response.status_code = 400
+    return response
+
+
+@app.errorhandler(401)
+def unauthorized(e):
+    response = jsonify({"message": "Unauthorized"})
+    response.status_code = 401
+    return response
+
+
+@app.errorhandler(403)
+def forbidden(e):
+    response = jsonify({"message": "Forbidden"})
+    response.status_code = 403
+    return response
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    response = jsonify({"message": "Not Found"})
+    response.status_code = 404
+    return response
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    response = jsonify({"message": "Unknown Error"})
+    response.status_code = 500
+    return response
 
 
 if __name__ == '__main__':

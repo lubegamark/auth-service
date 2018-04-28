@@ -253,6 +253,7 @@ def get_users():
         schema:
           id: Users
           type: object
+          $ref: '#/definitions/User'
         examples:
             [
               {
@@ -274,8 +275,6 @@ def get_users():
                 "uuid": "7a5a317f-0aff-4710-b312-850a65f2e3f6"
               },
             ]
-
-
     """
     users = User.query.all()
     users_json = [u.to_json() for u in users]

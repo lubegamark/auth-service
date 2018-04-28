@@ -143,8 +143,11 @@ def register():
         print(type(new_user))
         db.session.commit()
     except MultipleInvalid as error:
-        print(error)
-        raise APIError("Validation Error", 400)
+        print(error.path)
+        error_response = "{message}: {key}".format(
+            key=error.path[0],
+            message=error.error_message.capitalize())
+        raise APIError(error_response, 400)
     except Exception as error:
         print(error)
         raise APIError("Unknown Error occurred", 500)

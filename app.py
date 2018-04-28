@@ -70,7 +70,7 @@ def register():
         type: string
         required: true
         schema:
-              id: User
+              id: RegisterUser
               required:
                 - username
                 - password
@@ -107,17 +107,21 @@ def register():
             type: string
           email:
             type: string
-          phoneNumber:
+          uuid:
             type: string
     responses:
       200:
         description: An instance of created user
         schema:
-          id: Users
           type: object
           $ref: '#/definitions/User'
         examples:
-          {"id": 1, "username": "john", "phoneNumber": "+256789456123"}
+          {
+            "uuid": 1,
+            "name": "john",
+            "username": "john",
+            "email": "john@doe.com"
+          }
     """
 
     request_data = request.get_json()
@@ -158,7 +162,7 @@ def login():
         type: string
         required: true
         schema:
-              id: User
+              id: LoginUser
               required:
                 - username
                 - password
@@ -175,7 +179,7 @@ def login():
       200:
         description: An instance of created user
         schema:
-          id: Users
+          name: token
           type: object
         examples:
           {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQ4MTM"}

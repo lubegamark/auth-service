@@ -175,12 +175,20 @@ def login():
                   type: string
                   description: User's Password
                   default: "********"
+
+    definitions:
+      Token:
+        type: object
+        properties:
+          token:
+            type: string
     responses:
       200:
-        description: An instance of created user
+        description: Token of authenticated user
         schema:
           name: token
           type: object
+          $ref: '#/definitions/Token'
         examples:
           {"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjQ4MTM"}
     """

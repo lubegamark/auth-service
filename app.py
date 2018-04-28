@@ -225,12 +225,18 @@ def validate_token():
         schema:
           type: string
           required: true
+    definitions:
+      UUID:
+        type: object
+        properties:
+          user:
+            type: string
     responses:
       200:
         description: user id
         schema:
-          id: Users
           type: object
+          $ref: '#/definitions/UUID'
         examples:
           {"user": "de6534ad-5c48-44a2-bac9-3d79902ec816"}
 

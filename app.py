@@ -14,6 +14,7 @@ from voluptuous import (
     MultipleInvalid,
     Required,
     Schema, Optional)
+from flask_cors import CORS
 
 from auth.models import users, db_session
 from auth.models.users import User
@@ -22,6 +23,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SECURITY_PASSWORD_SALT"] = os.environ.get("SECURITY_PASSWORD_SALT")
+CORS(app)
 
 db = SQLAlchemy(app)
 db.session = db_session

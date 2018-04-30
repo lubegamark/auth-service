@@ -4,6 +4,7 @@ import os
 import uuid
 
 import jwt
+import sqlalchemy
 from flasgger import Swagger
 from flask import Flask, request
 from flask.json import jsonify
@@ -214,9 +215,12 @@ def login():
     except MultipleInvalid as error:
         print(error)
         raise APIError("Validation Error", 400)
+    except sqlalchemy.orm.exc.NoResultFound as error:
+        print(error)
+        raise APIError("Username or password invalid", 400)
     except Exception as error:
         print(error)
-        raise APIError("Unknown Error occurred", 500)
+        raise APIError("Username or password invalid", 400)
 
 
 @app.route('/validate', methods=['POST'])

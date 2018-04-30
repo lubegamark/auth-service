@@ -36,6 +36,7 @@ setup(
         'flake8==3.5.0',
         'flasgger==0.8.1',
         'Flask==0.12.2',
+        'Flask-Cors==3.0.4',
         'Flask-Security==3.0.0',
         'Flask-SQLAlchemy==2.3.2',
         'PyJWT==1.6.1',

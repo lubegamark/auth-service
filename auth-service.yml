@@ -10,6 +10,7 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 5000
+    nodePort: 30007
 ---
 # Auth Deployment
 apiVersion: apps/v1
